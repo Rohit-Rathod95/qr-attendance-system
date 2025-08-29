@@ -6,26 +6,25 @@ require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
 const attendanceRoutes = require('./routes/attendance');
-const facilitiesRoutes = require('./routes/facilities'); // Now included
+const facilitiesRoutes = require('./routes/facilities');
+const reportsRoutes = require('./routes/reports'); // Import the new router
 
 const app = express();
 
-// Middleware
 app.use(express.json());
 app.use(cors());
 app.use(helmet());
 
-// Routes
 app.use('/auth', authRoutes);
 app.use('/attendance', attendanceRoutes);
 app.use('/facilities', facilitiesRoutes);
+app.use('/reports', reportsRoutes); // Use the new router
 
-// Basic welcome route
 app.get('/', (req, res) => {
   res.send('QR Attendance API is running.');
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

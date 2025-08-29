@@ -16,4 +16,13 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
+// Authorize roles: admin or staff (faculty)
+const authorizeFacultyOrAdmin = (req, res, next) => {
+  if (req.userRole !== 'admin' && req.userRole !== 'staff') {
+    return res.status(403).json({ message: 'Access denied.' });
+  }
+  next();
+};
+
 module.exports = authenticateToken;
+module.exports.authorizeFacultyOrAdmin = authorizeFacultyOrAdmin;

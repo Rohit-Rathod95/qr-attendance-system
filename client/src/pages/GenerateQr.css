@@ -1,0 +1,123 @@
+/* src/pages/GenerateQrPage.css */
+
+.qr-generator-container {
+    padding: 20px;
+    max-width: 600px;
+    margin: 40px auto;
+    text-align: center;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    font-family: 'Inter', sans-serif; /* Using Inter font */
+}
+
+.qr-generator-container h1 {
+    color: #2c3e50;
+    margin-bottom: 25px;
+    font-size: 2.2em;
+    font-weight: 700;
+}
+
+.qr-generator-container div {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px; /* Space between label and select/input */
+}
+
+.qr-generator-container label {
+    font-weight: 600;
+    color: #34495e;
+    font-size: 1em;
+    width: 100%; /* Ensure label takes full width for alignment */
+    text-align: left;
+}
+
+.qr-generator-container select,
+.qr-generator-container button {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+    box-sizing: border-box; /* Include padding in width */
+    font-family: 'Inter', sans-serif;
+}
+
+.qr-generator-container select {
+    background-color: #f8f8f8;
+    cursor: pointer;
+    appearance: none; /* Remove default arrow */
+    -webkit-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="#2c3e50" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position-x: calc(100% - 10px);
+    background-position-y: center;
+}
+
+.qr-generator-container select:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+}
+
+.qr-generator-container button {
+    background-color: #3498db;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    border: none;
+    margin-top: 10px;
+}
+
+.qr-generator-container button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+.qr-generator-container button:active {
+    transform: translateY(0);
+}
+
+.qr-display-area {
+    margin-top: 30px;
+    padding: 25px;
+    background-color: #f9f9f9;
+    border: 1px dashed #a0aec0;
+    border-radius: 10px;
+}
+
+.qr-display-area h3 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+    font-weight: 600;
+}
+
+.qr-display-area p {
+    color: #555;
+    font-size: 0.95em;
+    margin-bottom: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .qr-generator-container {
+        margin: 20px auto;
+        padding: 15px;
+    }
+
+    .qr-generator-container h1 {
+        font-size: 1.8em;
+    }
+
+    .qr-display-area {
+        padding: 15px;
+    }
+
+    .qr-display-area h3 {
+        font-size: 1.2em;
+    }
+}

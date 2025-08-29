@@ -2,6 +2,7 @@
 const express = require('express');
 const pool = require('../db');
 const authenticateToken = require('../middleware/auth');
+const { authorizeFacultyOrAdmin } = require('../middleware/auth');
 const zod = require('zod');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
@@ -10,19 +11,60 @@ const createFacilitySchema = zod.object({
   name: zod.string().min(1),
   location: zod.string().min(1),
   qr_code: zod.string().min(1),
+  department_id: zod.number().int().positive(),
+  type: zod.enum(['Lab', 'Classroom', 'Other']),
 });
 
 // GET /facilities - List all facilities (admin/faculty can view)
-router.get('/', authenticateToken, async (req, res) => {
-  if (req.userRole !== 'admin' && req.userRole !== 'staff') {
-    return res.status(403).json({ message: 'Access denied.' });
-  }
-
+router.get('/', authenticateToken, authorizeFacultyOrAdmin, async (req, res) => {
   try {
-    const [facilities] = await pool.query('SELECT id, name, location, qr_code, created_at FROM facilities');
+    const { departmentId, type } = req.query;
+    let facilities;
+    if (departmentId && type) {
+      [facilities] = await pool.query(
+        `SELECT f.id, f.name, f.location, f.qr_code, f.type, f.created_at, f.department_id, d.name AS department_name
+         FROM facilities f
+         LEFT JOIN departments d ON f.department_id = d.id
+         WHERE f.department_id = ? AND f.type = ?`,
+        [departmentId, type]
+      );
+    } else if (departmentId) {
+      [facilities] = await pool.query(
+        `SELECT f.id, f.name, f.location, f.qr_code, f.type, f.created_at, f.department_id, d.name AS department_name
+         FROM facilities f
+         LEFT JOIN departments d ON f.department_id = d.id
+         WHERE f.department_id = ?`,
+        [departmentId]
+      );
+    } else if (type) {
+      [facilities] = await pool.query(
+        `SELECT f.id, f.name, f.location, f.qr_code, f.type, f.created_at, f.department_id, d.name AS department_name
+         FROM facilities f
+         LEFT JOIN departments d ON f.department_id = d.id
+         WHERE f.type = ?`,
+        [type]
+      );
+    } else {
+      [facilities] = await pool.query(
+        `SELECT f.id, f.name, f.location, f.qr_code, f.type, f.created_at, f.department_id, d.name AS department_name
+         FROM facilities f
+         LEFT JOIN departments d ON f.department_id = d.id`
+      );
+    }
     res.json(facilities);
   } catch (error) {
     console.error('Error fetching facilities:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+// GET /facilities/departments - List all departments
+router.get('/departments', authenticateToken, authorizeFacultyOrAdmin, async (req, res) => {
+  try {
+    const [departments] = await pool.query('SELECT id, name FROM departments ORDER BY name ASC');
+    res.json(departments);
+  } catch (error) {
+    console.error('Error fetching departments:', error);
     res.status(500).json({ message: 'Server error.' });
   }
 });
@@ -34,11 +76,11 @@ router.post('/', authenticateToken, async (req, res) => {
   }
 
   try {
-    const { name, location, qr_code } = createFacilitySchema.parse(req.body);
+    const { name, location, qr_code, department_id, type } = createFacilitySchema.parse(req.body);
 
     const [result] = await pool.query(
-      'INSERT INTO facilities (name, location, qr_code) VALUES (?, ?, ?)',
-      [name, location, qr_code]
+      'INSERT INTO facilities (name, location, qr_code, department_id, type) VALUES (?, ?, ?, ?, ?)',
+      [name, location, qr_code, department_id, type]
     );
 
     res.status(201).json({ message: 'Facility created successfully.', facilityId: result.insertId });

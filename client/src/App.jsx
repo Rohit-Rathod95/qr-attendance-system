@@ -4,7 +4,10 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import ScanPage from './pages/ScanPage';
 import GenerateQrPage from './pages/GenerateQrPage';
+import HistoryPage from './pages/HistoryPage'; // Import the new page
+import AdminReportsPage from './pages/AdminReportsPage'; // Import the new page
 
+// PrivateRoute component (no changes)
 const PrivateRoute = ({ children, requiredRole }) => {
   const isAuthenticated = localStorage.getItem('token');
   const userRole = localStorage.getItem('role');
@@ -14,8 +17,7 @@ const PrivateRoute = ({ children, requiredRole }) => {
   }
 
   if (requiredRole && requiredRole !== userRole) {
-    // You could show a 403 or redirect to a more appropriate page
-    return <Navigate to="/scan" replace />; 
+    return <Navigate to="/" replace />; 
   }
 
   return children;
@@ -39,7 +41,19 @@ const App = () => {
           </PrivateRoute>
         } />
         
-        {/* Redirect from root to login page */}
+        {/* Add new routes for reports */}
+        <Route path="/history" element={
+          <PrivateRoute requiredRole="student">
+            <HistoryPage />
+          </PrivateRoute>
+        } />
+
+        <Route path="/reports" element={
+          <PrivateRoute requiredRole="admin">
+            <AdminReportsPage />
+          </PrivateRoute>
+        } />
+
         <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>

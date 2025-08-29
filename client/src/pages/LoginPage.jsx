@@ -1,7 +1,9 @@
 // src/pages/LoginPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../api';
+import api from '../api'
+import './LoginPage.css';
+
 
 const LoginPage = () => {
   const [identifier, setIdentifier] = useState('');
@@ -29,38 +31,38 @@ const LoginPage = () => {
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '400px', margin: 'auto' }}>
-      <h1>Login</h1>
-      <form onSubmit={handleLogin}>
-        <div>
-          <label>Role:</label>
-          <select value={role} onChange={(e) => setRole(e.target.value)}>
-            <option value="student">Student</option>
-            <option value="faculty">Faculty</option>
-          </select>
-        </div>
-        <div>
-          <label>{role === 'student' ? 'Roll No.' : 'Email'}:</label>
-          <input
-            type="text"
-            value={identifier}
-            onChange={(e) => setIdentifier(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Login</button>
-      </form>
+    <div className="login-container"> {/* Apply the class here */}
+        <h1>Login</h1>
+        <form onSubmit={handleLogin} className="login-form"> {/* Apply a class here too */}
+            <div>
+                <label>Role:</label>
+                <select value={role} onChange={(e) => setRole(e.target.value)}>
+                    <option value="student">Student</option>
+                    <option value="faculty">Faculty</option>
+                </select>
+            </div>
+            <div>
+                <label>{role === 'student' ? 'Roll No.' : 'Email'}:</label>
+                <input
+                    type="text"
+                    value={identifier}
+                    onChange={(e) => setIdentifier(e.target.value)}
+                    required
+                />
+            </div>
+            <div>
+                <label>Password:</label>
+                <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                />
+            </div>
+            <button type="submit">Login</button>
+        </form>
     </div>
-  );
+);
 };
 
 export default LoginPage;
